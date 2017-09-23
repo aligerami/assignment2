@@ -1,4 +1,5 @@
 import random
+import copy
 def draw_a_chessboard(list):
     for i in range (0,len(list)):
         for j in range (0,len(list[i])):
@@ -10,48 +11,68 @@ def draw_a_chessboard(list):
         print("|")
         
 def eight_queen():
-    chessboad=8*[0]
-    for i in range (0,8):
-      chessboad[i]=8*[0]
-    i=0
-    while i<8:
-        i+=1
-        x=random.randint(0,7)
-        y=random.randint(0,7)
-        if(chessboad[x][y]==1):
-            i=i-1
-        chessboad[x][y]=1
-        #print(i,"x is:",x," y is:",y)
+
+    row=[]
+    column=[]
+    queen_number=0
+    start=0
+    chessboad=[0]
+    while  queen_number!=8:
+    #if True:
+        queen_number=0
+        chessboad=8*[0]
+        row.clear()
+        column.clear()
+        print("************************************")
+        for l in range (0,8):
+            chessboad[l]=8*[0]
+        for i in range (0,8):
+            for j in range (0,8):
+              print("i is ",(i+start)%8," j is ",j)
+              print("check : ",check_queen_in_board(chessboad,(i+start)%8,j))
+
+              if  check_queen_in_board(chessboad,(i+start)%8,j):  
+                  chessboad[(i+start)%8][j]=1
+                  row.append(j)
+                  column.append((i+start)%8)
+                  queen_number=queen_number+1
+                  break
+                  print(" queen i is ",(i+start)%8," j is ",j)
+        start=1+start
+        print("start is",start)
     return chessboad
 
 def is_solved(list): 
     for i in range(0,len(list)):
         for j in range (0,len(list[i])):
             if(list[i][j]==1):
-                    print('i ',i, " j ",j)
                     for k in range(0,len(list)):
                         if(list[i][k] == 1 and k!=j):
                             return False;
                         if(list[k][j]==1 and k!=i):
                             return False
-                        if(j+k<8 or j-k>0) and (i+k<8 or i-k>0): 
-                            if(list[k+i if(k+i)<len(list) else i-k][k+j if(k+j)<8 else j-k]==1 and k!=0):
-                                print ("i is",k+i if(k+i)<len(list) else i+k-8)
-                                print("j is",k+j if(k+j)<8 else j+k-8)
-                                print('i ',i, " j ",j," k ",k)
-                                draw_a_chessboard(list)
+                        if(j+k<8 and i+k<8):
+                            if(list[k+i][k+j]==1 and k!=0):
                                 return False
-                            
+                        if(j-k>=0 and i+k<8):
+                            if(list[k+i][j-k]==1 and k!=0):
+                              return False
+    return True
+def check_queen_in_board(list,i,j):
+    temp=  copy.deepcopy(list)
+    temp[i][j]=1
+    print(temp)
+    draw_a_chessboard(temp)
+    return is_solved(temp)
     return True
 def main():
     flag=True
-    while flag:
-        print("*****************")
-        board=eight_queen()
-        if(is_solved(board)):
-           draw_a_chessboard(board)
-           print("heeell")
-           flag=False
+    print("*****************")
+    board=eight_queen()
+    draw_a_chessboard(board)
+    if(is_solved(board)):
+        draw_a_chessboard(board)
+    
        
 list=[[0,0,0,1,0,0,0,0],
       [0,1,0,0,0,0,0,0],
@@ -62,8 +83,7 @@ list=[[0,0,0,1,0,0,0,0],
       [0,0,1,0,0,0,0,0],
       [0,0,0,0,0,0,1,0]
     ]      
- 
-print(is_solved(list))
-print(list[-2][2])
+#print(check_queen_in_board(list,2,0))
+#print(is_solved(list))
 
-#main()
+main()
